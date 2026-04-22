@@ -268,6 +268,7 @@ with st.container(border=True):
     _hdr_l, _hdr_r = st.columns((6, 1))
     with _hdr_l:
         st.markdown("#### Executive summary")
+        st.caption("Answer-first readout · modeled recommendation only")
     with _hdr_r:
         st.download_button(
             "Download Report",

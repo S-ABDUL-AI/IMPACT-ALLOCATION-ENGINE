@@ -24,39 +24,49 @@ def executive_summary_strip(
     region_scope: str,
 ) -> ExecutiveSummaryStrip:
     """
-    Short, plain-language headline + bullets for non-analyst users.
-    Anchors on the quantitative model (analyst persona) but surfaces the ‘so what’ first.
+    McKinsey-style executive readout: answer first, bold lead phrases, crisp implications.
     """
     ranked = alloc.sort_values("final_score", ascending=False)
     top = ranked.iloc[0]
     tb = float(total_budget)
     top_pct = 100.0 * float(top["allocation"]) / tb if tb > 0 else 0.0
     scope = region_scope if region_scope else "All regions"
+    scen = str(scenario)
     headline = (
-        f"Under the **{scenario}** case, **{top['intervention_name']}** receives the largest modeled allocation "
-        f"— **{top_pct:.0f}%** of **${tb:,.0f}** in the current scope."
+        f"**Bottom line:** Under **{scen}** effectiveness assumptions, **{top['intervention_name']}** should anchor "
+        f"the marginal funding decision—the modeled split assigns **~{top_pct:.0f}%** of the **${tb:,.0f}** envelope "
+        f"in this scope, driven by the strongest composite score (impact, evidence, uncertainty, funding headroom, scalability)."
     )
     caption = (
-        f"Scope: **{scope}** · **{len(alloc)}** program(s) in view. "
-        "Illustrative model output—pair with diligence and implementation risk (see **Methodology**). "
-        "Use **Download Report** (top-right of this summary) for a concise HTML memo."
+        f"**Context:** **{len(alloc)}** program(s) · **{scope}**. "
+        "Transparent heuristic only—not a substitute for partner diligence, delivery risk, or governance constraints. "
+        "**Download Report** (top-right) for a fuller narrative and appendix table."
     )
     bullets: list[str] = [
-        "Rankings combine evidence-adjusted impact per dollar, an uncertainty discount, then funding gap and scalability multipliers.",
+        "**Why this wins.** The score rewards programs that combine favorable evidence-adjusted impact per dollar "
+        "with explicit discounts for uncertainty, then scales by funding gap and scalability—i.e., where extra dollars "
+        "can plausibly convert into outcomes at scale.",
     ]
     if len(ranked) > 1:
         second = ranked.iloc[1]
         p2 = 100.0 * float(second["allocation"]) / tb if tb > 0 else 0.0
         bullets.append(
-            f"**{second['intervention_name']}** is next at ~**{p2:.0f}%**—relevant if you cap concentration on any single program."
+            f"**Portfolio balance.** **{second['intervention_name']}** is the next material tranche (~**{p2:.0f}%**); "
+            "it is the natural counterweight if concentration limits, reputational risk, or diversification rules bind."
         )
     else:
-        bullets.append("Add more programs in **Select Interventions** to compare how marginal dollars would shift across a broader portfolio.")
+        bullets.append(
+            "**Breadth.** Expand **Select Interventions** to test how marginal allocations move when more programs compete for the same envelope."
+        )
     if float(ranked["uncertainty_level"].max()) > 0.25:
-        bullets.append("Higher **uncertainty** on at least one row pulls down its score—treat ordering as directional, not definitive.")
+        bullets.append(
+            "**Risk lens.** At least one program carries elevated modeled uncertainty—treat the ordering as directional "
+            "and validate with updated evidence and unit economics before locking commitments."
+        )
     else:
         bullets.append(
-            "Use **Sensitivity** sliders and **Scenario** below to stress-test whether the ranking holds under different cost and effectiveness assumptions."
+            "**What to test next.** Use **Sensitivity** (cost / effectiveness) and alternate **Scenario** settings below; "
+            "if the ranking flips, the case for the current anchor weakens—revisit assumptions before capital deploys."
         )
     return {
         "headline": headline,
