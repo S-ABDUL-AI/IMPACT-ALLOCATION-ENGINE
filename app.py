@@ -12,6 +12,14 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 
+# Align chart text with UI sans (Inter loads via CSS; matplotlib falls back if needed).
+plt.rcParams.update(
+    {
+        "font.family": "sans-serif",
+        "font.sans-serif": ["Inter", "Segoe UI", "DejaVu Sans", "Arial", "sans-serif"],
+    }
+)
+
 from data_loader import DEFAULT_REMOTE_CSV, load_interventions_csv
 from modeling import allocate_budget, calculate_scores, compare_budget_scale, scenario_effect_multiplier
 from policy import allocation_insights, executive_summary_strip, funding_brief_markdown
@@ -25,10 +33,75 @@ st.set_page_config(
 )
 
 st.markdown(
-    """
+    r"""
 <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:wght@400;600&display=swap");
+
+    :root {
+        --iae-font-ui: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        --iae-font-display: "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
+    }
+
+    html, body,
+    .stApp,
+    .stApp [data-testid="stAppViewContainer"],
+    .stApp [data-testid="stSidebar"],
+    .stApp [data-testid="stMarkdownContainer"],
+    .stApp [data-testid="stVerticalBlock"],
+    .stApp label,
+    .stApp p,
+    .stApp li,
+    .stApp small,
+    .stApp input,
+    .stApp textarea,
+    .stApp button,
+    .stApp [data-baseweb="select"],
+    .stApp [data-baseweb="input"] {
+        font-family: var(--iae-font-ui) !important;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .stApp h1,
+    .stApp h2,
+    .stApp h3,
+    .stApp h4,
+    .stApp h5,
+    .stApp h6 {
+        font-family: var(--iae-font-display) !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.02em;
+        color: #0f172a !important;
+    }
+
+    .stApp h1 { font-size: 2rem !important; line-height: 1.2 !important; }
+    .stApp h2 { font-size: 1.35rem !important; }
+    .stApp h3 { font-size: 1.15rem !important; }
+    .stApp h4 { font-size: 1.05rem !important; }
+
+    .stApp details > summary {
+        font-family: var(--iae-font-ui) !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.01em;
+    }
+
+    div[data-testid="stMetricLabel"] {
+        font-family: var(--iae-font-ui) !important;
+        font-weight: 600 !important;
+        font-size: 0.72rem !important;
+        letter-spacing: 0.06em !important;
+        text-transform: uppercase !important;
+        color: #64748b !important;
+    }
+    div[data-testid="stMetricValue"] {
+        font-family: var(--iae-font-ui) !important;
+        font-weight: 700 !important;
+        font-feature-settings: "tnum" 1, "lnum" 1;
+        color: #0f172a !important;
+    }
+
     .block-container { padding-top: 1rem !important; }
-    div[data-testid="stMetricValue"] { font-weight: 700 !important; }
+
     /* Keep the control panel readable on wide layouts (does not block Streamlit’s collapse control) */
     section[data-testid="stSidebar"] {
         min-width: 18rem !important;
