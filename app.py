@@ -64,6 +64,14 @@ NGOs and foundations must divide **limited budgets** across many programs, each 
 Without a transparent way to compare options and stress-test those assumptions, funding decisions can drift
 from impact or become hard to explain to boards and partners.
 
+### Solution
+
+**Impact Allocation Engine** turns your intervention panel into a comparable score for each program—blending
+expected impact, evidence strength, uncertainty, funding headroom, and scalability—then **splits a fixed budget**
+in proportion to those scores. You can **filter** by region and program set, **stress-test** costs and effectiveness,
+run **optimistic / base / pessimistic** cases, and export a **structured funding brief** so trade-offs are visible
+before capital is committed.
+
 ### Methodology
 
 This tool applies **cost-effectiveness logic**, **explicit uncertainty discounts**, and **scenario analysis**
