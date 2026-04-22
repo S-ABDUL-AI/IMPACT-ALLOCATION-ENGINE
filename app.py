@@ -53,8 +53,6 @@ to approximate how a funder might allocate a fixed budget across interventions.
 It is **inspired by** evidence-first approaches in global health and development (for example, the transparency
 goals behind organizations like [GiveWell](https://www.givewell.org/)), but it is **not** an official GiveWell model
 and should not be treated as their published cost-effectiveness estimates.
-
-**Repository:** [IMPACT-ALLOCATION-ENGINE](https://github.com/S-ABDUL-AI/IMPACT-ALLOCATION-ENGINE)
 """
 )
 
@@ -80,7 +78,7 @@ remote = st.sidebar.text_input(
 )
 
 _effective_url = remote.strip() or DEFAULT_REMOTE_CSV
-df0, data_src = cached_interventions(_effective_url)
+df0, _ = cached_interventions(_effective_url)
 
 regions = sorted(df0["region"].unique().tolist())
 region_pick = st.sidebar.selectbox("Select Region", ["All regions"] + regions)
@@ -121,8 +119,6 @@ if region_pick != "All regions":
 if df.empty:
     st.warning("No rows after filters — broaden region or select interventions.")
     st.stop()
-
-st.success(f"Data source: **{data_src}**")
 
 per_row_cost = pd.Series(1.0, index=df.index)
 if st.sidebar.button("What if malaria cost doubles?", help="Doubles cost for Malaria Bed Nets (id=1) only."):
