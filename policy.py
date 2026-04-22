@@ -2,7 +2,69 @@
 
 from __future__ import annotations
 
+from typing import TypedDict
+
 import pandas as pd
+
+
+class ExecutiveSummaryStrip(TypedDict):
+    """Payload for the dashboard ‘Executive summary’ strip (portfolio / sponsor readers)."""
+
+    headline: str
+    caption: str
+    bullets: list[str]
+    top_pct: float
+    n_programs: int
+
+
+def executive_summary_strip(
+    alloc: pd.DataFrame,
+    total_budget: float,
+    scenario: str,
+    region_scope: str,
+) -> ExecutiveSummaryStrip:
+    """
+    Short, plain-language headline + bullets for non-analyst users.
+    Anchors on the quantitative model (analyst persona) but surfaces the ‘so what’ first.
+    """
+    ranked = alloc.sort_values("final_score", ascending=False)
+    top = ranked.iloc[0]
+    tb = float(total_budget)
+    top_pct = 100.0 * float(top["allocation"]) / tb if tb > 0 else 0.0
+    scope = region_scope if region_scope else "All regions"
+    headline = (
+        f"Under the **{scenario}** case, **{top['intervention_name']}** receives the largest modeled allocation "
+        f"— **{top_pct:.0f}%** of **${tb:,.0f}** in the current scope."
+    )
+    caption = (
+        f"Scope: **{scope}** · **{len(alloc)}** program(s) in view. "
+        "Illustrative model output—pair with diligence and implementation risk (see **Methodology**). "
+        "Use **Download Report** at the bottom of the page for a concise HTML memo."
+    )
+    bullets: list[str] = [
+        "Rankings combine evidence-adjusted impact per dollar, an uncertainty discount, then funding gap and scalability multipliers.",
+    ]
+    if len(ranked) > 1:
+        second = ranked.iloc[1]
+        p2 = 100.0 * float(second["allocation"]) / tb if tb > 0 else 0.0
+        bullets.append(
+            f"**{second['intervention_name']}** is next at ~**{p2:.0f}%**—relevant if you cap concentration on any single program."
+        )
+    else:
+        bullets.append("Add more programs in **Select Interventions** to compare how marginal dollars would shift across a broader portfolio.")
+    if float(ranked["uncertainty_level"].max()) > 0.25:
+        bullets.append("Higher **uncertainty** on at least one row pulls down its score—treat ordering as directional, not definitive.")
+    else:
+        bullets.append(
+            "Use **Sensitivity** sliders and **Scenario** below to stress-test whether the ranking holds under different cost and effectiveness assumptions."
+        )
+    return {
+        "headline": headline,
+        "caption": caption,
+        "bullets": bullets,
+        "top_pct": top_pct,
+        "n_programs": int(len(alloc)),
+    }
 
 
 def allocation_insights(df: pd.DataFrame) -> list[str]:

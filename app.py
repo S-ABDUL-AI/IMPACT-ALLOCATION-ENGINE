@@ -14,7 +14,7 @@ import streamlit as st
 
 from data_loader import DEFAULT_REMOTE_CSV, load_interventions_csv
 from modeling import allocate_budget, calculate_scores, compare_budget_scale, scenario_effect_multiplier
-from policy import allocation_insights, funding_brief_markdown
+from policy import allocation_insights, executive_summary_strip, funding_brief_markdown
 from report_html import build_mckinsey_style_report_html
 
 st.set_page_config(
@@ -181,6 +181,22 @@ scored = calculate_scores(
     per_row_cost_mult=per_row_cost,
 )
 alloc = allocate_budget(scored, total_budget)
+
+# ---------------------------------------------------------------------------
+# Executive summary (portfolio / sponsor readers — quantitative detail stays below)
+# ---------------------------------------------------------------------------
+_ex = executive_summary_strip(alloc, float(total_budget), scenario, region_pick)
+with st.container(border=True):
+    st.markdown("#### Executive summary")
+    es_l, es_r = st.columns((3, 1))
+    with es_l:
+        st.markdown(_ex["headline"])
+        st.caption(_ex["caption"])
+        for _b in _ex["bullets"]:
+            st.markdown(f"- {_b}")
+    with es_r:
+        st.metric("Programs in view", _ex["n_programs"])
+        st.metric("Top share of budget", f"{_ex['top_pct']:.0f}%")
 
 # ---------------------------------------------------------------------------
 # Executive metrics
