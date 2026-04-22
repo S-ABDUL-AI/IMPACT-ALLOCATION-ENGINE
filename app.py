@@ -14,7 +14,7 @@ import streamlit as st
 
 from data_loader import DEFAULT_REMOTE_CSV, load_interventions_csv
 from modeling import allocate_budget, calculate_scores, compare_budget_scale, scenario_effect_multiplier
-from policy import allocation_insights, funding_brief_markdown
+from policy import allocation_insights, build_mckinsey_style_report_html, funding_brief_markdown
 
 st.set_page_config(
     page_title="Impact Allocation Engine",
@@ -215,10 +215,35 @@ for b in allocation_insights(alloc):
 st.markdown("## Funding recommendation report")
 st.markdown(funding_brief_markdown(alloc, total_budget, scenario))
 
-st.download_button(
-    "Download scored table (CSV)",
-    data=alloc.to_csv(index=False).encode("utf-8"),
-    file_name="impact_allocation_scored.csv",
-    mime="text/csv",
-    use_container_width=True,
+st.markdown("**Note**")
+st.caption(
+    "Figures are illustrative; they should be interpreted alongside qualitative judgment, "
+    "implementation risk, and partner capacity."
 )
+
+report_html = build_mckinsey_style_report_html(
+    alloc,
+    float(total_budget),
+    scenario,
+    region_pick,
+    cost_adj,
+    effect_adj,
+)
+st.download_button(
+    "Download Report",
+    data=report_html.encode("utf-8"),
+    file_name="impact_allocation_funding_report.html",
+    mime="text/html",
+    use_container_width=True,
+    help="McKinsey-style HTML brief: headline insight, executive summary, findings, and appendix table. Open in a browser or import into Word.",
+)
+
+with st.expander("Raw data", expanded=False):
+    st.caption("Full scored table (all columns) for spreadsheets or further analysis.")
+    st.download_button(
+        "Download scored table (CSV)",
+        data=alloc.to_csv(index=False).encode("utf-8"),
+        file_name="impact_allocation_scored.csv",
+        mime="text/csv",
+        use_container_width=True,
+    )
