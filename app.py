@@ -33,6 +33,14 @@ st.markdown(
     section[data-testid="stSidebar"] {
         min-width: 18rem !important;
     }
+    /* Vertical “card” panels inside the sidebar (Streamlit bordered containers) */
+    section[data-testid="stSidebar"] [data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: 12px !important;
+        box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08) !important;
+        border-color: #e5e7eb !important;
+        background-color: #ffffff !important;
+        margin-bottom: 0.65rem !important;
+    }
 </style>
 """,
     unsafe_allow_html=True,
@@ -68,64 +76,71 @@ and should not be treated as their published cost-effectiveness estimates.
 )
 
 # ---------------------------------------------------------------------------
-# Sidebar inputs (keep this block contiguous so the sidebar paints reliably)
+# Sidebar — vertical card-style sections (bordered containers, stacked top to bottom)
 # ---------------------------------------------------------------------------
-st.sidebar.markdown("##### Controls")
-with st.sidebar.expander("How to use", expanded=False):
-    st.markdown(
-        """
+with st.sidebar:
+    with st.container(border=True):
+        st.markdown("##### Guide")
+        with st.expander("How to use", expanded=False):
+            st.markdown(
+                """
 1. **Data** — Keep the default CSV URL or paste a raw link to your own `interventions`-style file.
 2. **Scope** — Choose **Select Region**, then open **Select Interventions** to add or remove programs.
 3. **Budget & scenario** — Set **Total budget** and **Scenario** (Base / Optimistic / Pessimistic).
 4. **Stress-test** — Move **Sensitivity** sliders (and optional **Moral weights**) to see how scores and allocations shift.
 5. **Decide** — Read the main dashboard (metrics, charts, allocation table, policy notes). Use **Download Report** for an HTML brief (includes an appendix table you can copy into a spreadsheet).
 """
-    )
-st.sidebar.divider()
-st.sidebar.header("Inputs")
-remote = st.sidebar.text_input(
-    "Raw CSV URL (optional)",
-    value=os.environ.get("IMPACT_CSV_URL", DEFAULT_REMOTE_CSV),
-    help="Defaults to GitHub raw `interventions.csv` once pushed to the repo root.",
-)
+            )
+
+    with st.container(border=True):
+        st.markdown("##### Data")
+        remote = st.text_input(
+            "Raw CSV URL (optional)",
+            value=os.environ.get("IMPACT_CSV_URL", DEFAULT_REMOTE_CSV),
+            help="Defaults to GitHub raw `interventions.csv` once pushed to the repo root.",
+        )
 
 _effective_url = remote.strip() or DEFAULT_REMOTE_CSV
 df0, _ = cached_interventions(_effective_url)
 
-regions = sorted(df0["region"].unique().tolist())
-region_pick = st.sidebar.selectbox("Select Region", ["All regions"] + regions)
+with st.sidebar:
+    with st.container(border=True):
+        st.markdown("##### Scope")
+        regions = sorted(df0["region"].unique().tolist())
+        region_pick = st.selectbox("Select Region", ["All regions"] + regions)
+        ids_default = df0["intervention_id"].tolist()
+        _name_by_id = df0.set_index("intervention_id")["intervention_name"].to_dict()
+        with st.expander("Select Interventions", expanded=False):
+            id_pick = st.multiselect(
+                "Select Interventions",
+                options=ids_default,
+                default=ids_default,
+                format_func=lambda i: f"{i} — {_name_by_id.get(i, '')}",
+                label_visibility="collapsed",
+            )
 
-ids_default = df0["intervention_id"].tolist()
-_name_by_id = df0.set_index("intervention_id")["intervention_name"].to_dict()
-with st.sidebar.expander("Select Interventions", expanded=False):
-    id_pick = st.multiselect(
-        "Select Interventions",
-        options=ids_default,
-        default=ids_default,
-        format_func=lambda i: f"{i} — {_name_by_id.get(i, '')}",
-        label_visibility="collapsed",
-    )
+    with st.container(border=True):
+        st.markdown("##### Budget & scenario")
+        total_budget = st.slider("Total budget (USD)", 10_000, 2_000_000, 200_000, step=5_000)
+        scenario = st.selectbox("Scenario", ["Base", "Optimistic", "Pessimistic"], index=0)
 
-total_budget = st.sidebar.slider("Total budget (USD)", 10_000, 2_000_000, 200_000, step=5_000)
+    with st.container(border=True):
+        st.markdown("##### Sensitivity")
+        cost_adj = st.slider("Cost multiplier (all rows)", 0.5, 2.0, 1.0, 0.05)
+        effect_adj = st.slider("Effectiveness multiplier (effect_size)", 0.5, 1.5, 1.0, 0.05)
 
-scenario = st.sidebar.selectbox("Scenario", ["Base", "Optimistic", "Pessimistic"], index=0)
+    with st.container(border=True):
+        st.markdown("##### Options")
+        with st.expander("Moral weights (optional)", expanded=False):
+            life_weight = st.slider("Weight: lives / life-saving programs", 0.5, 2.0, 1.0, 0.05)
+            income_weight = st.slider("Weight: income gains", 0.0, 1.0, 0.10, 0.02)
+        malaria_double = st.checkbox(
+            "Double cost for Malaria Bed Nets (id=1)",
+            value=False,
+            help="Applies a 2× multiplier to cost only for Malaria Bed Nets when that intervention is in scope.",
+        )
 
-st.sidebar.subheader("Sensitivity")
-cost_adj = st.sidebar.slider("Cost multiplier (all rows)", 0.5, 2.0, 1.0, 0.05)
-effect_adj = st.sidebar.slider("Effectiveness multiplier (effect_size)", 0.5, 1.5, 1.0, 0.05)
-
-with st.sidebar.expander("Moral weights (optional)", expanded=False):
-    life_weight = st.slider("Weight: lives / life-saving programs", 0.5, 2.0, 1.0, 0.05)
-    income_weight = st.slider("Weight: income gains", 0.0, 1.0, 0.10, 0.02)
-
-malaria_double = st.sidebar.checkbox(
-    "Double cost for Malaria Bed Nets (id=1)",
-    value=False,
-    help="Applies a 2× multiplier to cost only for Malaria Bed Nets when that intervention is in scope.",
-)
-
-st.sidebar.divider()
-st.sidebar.caption("**Developed by:** Sherriff Abdul-Hamid")
+    st.caption("**Developed by:** Sherriff Abdul-Hamid")
 
 # ---------------------------------------------------------------------------
 # Filter + score
