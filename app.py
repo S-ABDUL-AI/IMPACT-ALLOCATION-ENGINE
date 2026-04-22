@@ -1,5 +1,5 @@
 """
-Impact Allocation Engine (GiveWell-style) — Streamlit entrypoint.
+Impact Allocation Engine — Streamlit entrypoint.
 
 Evidence-leaning cost-effectiveness with explicit uncertainty and scenario controls.
 """
@@ -46,9 +46,16 @@ def cached_interventions(remote_url: str) -> tuple:
     return df, src
 
 
-st.title("Impact Allocation Engine (GiveWell-style)")
+st.title("Impact Allocation Engine")
 st.markdown(
     """
+### Problem statement
+
+NGOs and foundations must divide **limited budgets** across many programs, each with different **costs**,
+**evidence quality**, and **room to scale**—often under shifting assumptions about effectiveness and unit costs.
+Without a transparent way to compare options and stress-test those assumptions, funding decisions can drift
+from impact or become hard to explain to boards and partners.
+
 ### Methodology
 
 This tool applies **cost-effectiveness logic**, **explicit uncertainty discounts**, and **scenario analysis**
