@@ -29,6 +29,10 @@ st.markdown(
 <style>
     .block-container { padding-top: 1rem !important; }
     div[data-testid="stMetricValue"] { font-weight: 700 !important; }
+    /* Keep the control panel readable on wide layouts (does not block Streamlit’s collapse control) */
+    section[data-testid="stSidebar"] {
+        min-width: 18rem !important;
+    }
 </style>
 """,
     unsafe_allow_html=True,
@@ -57,8 +61,9 @@ and should not be treated as their published cost-effectiveness estimates.
 )
 
 # ---------------------------------------------------------------------------
-# Sidebar inputs
+# Sidebar inputs (keep this block contiguous so the sidebar paints reliably)
 # ---------------------------------------------------------------------------
+st.sidebar.markdown("##### Controls")
 with st.sidebar.expander("How to use", expanded=False):
     st.markdown(
         """
@@ -106,6 +111,12 @@ with st.sidebar.expander("Moral weights (optional)", expanded=False):
     life_weight = st.slider("Weight: lives / life-saving programs", 0.5, 2.0, 1.0, 0.05)
     income_weight = st.slider("Weight: income gains", 0.0, 1.0, 0.10, 0.02)
 
+malaria_double = st.sidebar.checkbox(
+    "Double cost for Malaria Bed Nets (id=1)",
+    value=False,
+    help="Applies a 2× multiplier to cost only for Malaria Bed Nets when that intervention is in scope.",
+)
+
 st.sidebar.divider()
 st.sidebar.caption("**Developed by:** Sherriff Abdul-Hamid")
 
@@ -121,9 +132,8 @@ if df.empty:
     st.stop()
 
 per_row_cost = pd.Series(1.0, index=df.index)
-if st.sidebar.button("What if malaria cost doubles?", help="Doubles cost for Malaria Bed Nets (id=1) only."):
-    mask = df["intervention_id"] == 1
-    per_row_cost.loc[mask] = 2.0
+if malaria_double:
+    per_row_cost.loc[df["intervention_id"] == 1] = 2.0
 
 scored = calculate_scores(
     df,
