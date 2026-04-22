@@ -55,33 +55,39 @@ def cached_interventions(remote_url: str) -> tuple:
 
 
 st.title("Impact Allocation Engine")
-st.markdown(
-    """
-### Problem statement
 
-NGOs and foundations must divide **limited budgets** across many programs, each with different **costs**,
-**evidence quality**, and **room to scale**—often under shifting assumptions about effectiveness and unit costs.
-Without a transparent way to compare options and stress-test those assumptions, funding decisions can drift
-from impact or become hard to explain to boards and partners.
-
-### Solution
-
-**Impact Allocation Engine** turns your intervention panel into a comparable score for each program—blending
-expected impact, evidence strength, uncertainty, funding headroom, and scalability—then **splits a fixed budget**
-in proportion to those scores. You can **filter** by region and program set, **stress-test** costs and effectiveness,
-run **optimistic / base / pessimistic** cases, and export a **structured funding brief** so trade-offs are visible
-before capital is committed.
-
-### Methodology
-
-This tool applies **cost-effectiveness logic**, **explicit uncertainty discounts**, and **scenario analysis**
-to approximate how a funder might allocate a fixed budget across interventions.
-
-It is **inspired by** evidence-first approaches in global health and development (for example, the transparency
-goals behind organizations like [GiveWell](https://www.givewell.org/)), but it is **not** an official GiveWell model
-and should not be treated as their published cost-effectiveness estimates.
+with st.expander("Problem statement", expanded=False):
+    st.markdown(
+        """
+NGOs and foundations must divide limited budgets across many programs, each with different costs, evidence
+quality, and room to scale—often under shifting assumptions about effectiveness and unit costs. Without a
+transparent way to compare options and stress-test those assumptions, funding decisions can drift from impact
+or become hard to explain to boards and partners.
 """
-)
+    )
+
+with st.expander("Solution", expanded=False):
+    st.markdown(
+        """
+**Impact Allocation Engine** turns your intervention panel into a comparable score for each program—blending
+expected impact, evidence strength, uncertainty, funding headroom, and scalability—then splits a fixed budget in
+proportion to those scores. You can filter by region and program set, stress-test costs and effectiveness,
+run optimistic / base / pessimistic cases, and export a structured funding brief so trade-offs are visible before
+capital is committed.
+"""
+    )
+
+with st.expander("Methodology", expanded=False):
+    st.markdown(
+        """
+This tool applies cost-effectiveness logic, explicit uncertainty discounts, and scenario analysis to approximate
+how a funder might allocate a fixed budget across interventions.
+
+It is inspired by evidence-first approaches in global health and development (for example, the transparency goals
+behind organizations like [GiveWell](https://www.givewell.org/)), but it is not an official GiveWell model and should
+not be treated as their published cost-effectiveness estimates.
+"""
+    )
 
 # ---------------------------------------------------------------------------
 # Sidebar — vertical card-style sections (bordered containers, stacked top to bottom)
