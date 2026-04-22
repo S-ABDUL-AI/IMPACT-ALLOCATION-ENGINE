@@ -39,7 +39,7 @@ def executive_summary_strip(
     caption = (
         f"Scope: **{scope}** · **{len(alloc)}** program(s) in view. "
         "Illustrative model output—pair with diligence and implementation risk (see **Methodology**). "
-        "Use **Export HTML** (top-right of this summary) for a concise HTML memo."
+        "Use **Download Report** (top-right of this summary) for a concise HTML memo."
     )
     bullets: list[str] = [
         "Rankings combine evidence-adjusted impact per dollar, an uncertainty discount, then funding gap and scalability multipliers.",

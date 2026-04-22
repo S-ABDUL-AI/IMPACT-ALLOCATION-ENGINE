@@ -135,7 +135,7 @@ st.markdown(
         margin-bottom: 0.65rem !important;
     }
 
-    /* Compact HTML export control (tighter than default Streamlit button chrome) */
+    /* Compact Download Report control (tighter than default Streamlit button chrome) */
     div[data-testid="stDownloadButton"] button {
         font-size: 0.78rem !important;
         padding: 0.22rem 0.55rem !important;
@@ -171,7 +171,7 @@ with st.sidebar:
 2. **Scope** — Choose **Select Region**, then open **Select Interventions** to add or remove programs.
 3. **Budget & scenario** — Set **Total budget** and **Scenario** (Base / Optimistic / Pessimistic).
 4. **Stress-test** — Move **Sensitivity** sliders (and optional **Moral weights**) to see how scores and allocations shift.
-5. **Decide** — Read **Executive summary** (use **Export HTML** in its top-right), then metrics/charts, allocation, and policy notes.
+5. **Decide** — Read **Executive summary** (use **Download Report** in its top-right), then metrics/charts, allocation, and policy notes.
 """
             )
 
@@ -270,11 +270,11 @@ with st.container(border=True):
         st.markdown("#### Executive summary")
     with _hdr_r:
         st.download_button(
-            "Export HTML",
+            "Download Report",
             data=report_html.encode("utf-8"),
             file_name="impact_allocation_funding_report.html",
             mime="text/html",
-            key="iae_export_html_report",
+            key="iae_download_report",
             use_container_width=False,
             type="secondary",
             help="Concise HTML brief: headline, findings, and appendix table. Open in a browser or import into Word.",
