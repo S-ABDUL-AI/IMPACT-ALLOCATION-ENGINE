@@ -68,7 +68,7 @@ with st.sidebar.expander("How to use", expanded=False):
 2. **Scope** — Choose **Select Region**, then open **Select Interventions** to add or remove programs.
 3. **Budget & scenario** — Set **Total budget** and **Scenario** (Base / Optimistic / Pessimistic).
 4. **Stress-test** — Move **Sensitivity** sliders (and optional **Moral weights**) to see how scores and allocations shift.
-5. **Decide** — Read the main dashboard (metrics, charts, allocation table, policy notes). Use **Download Report** for an HTML brief; expand **Raw data** for a CSV export.
+5. **Decide** — Read the main dashboard (metrics, charts, allocation table, policy notes). Use **Download Report** for an HTML brief (includes an appendix table you can copy into a spreadsheet).
 """
     )
 st.sidebar.divider()
@@ -251,13 +251,3 @@ st.download_button(
     use_container_width=True,
     help="McKinsey-style HTML brief: headline insight, executive summary, findings, and appendix table. Open in a browser or import into Word.",
 )
-
-with st.expander("Raw data", expanded=False):
-    st.caption("Full scored table (all columns) for spreadsheets or further analysis.")
-    st.download_button(
-        "Download scored table (CSV)",
-        data=alloc.to_csv(index=False).encode("utf-8"),
-        file_name="impact_allocation_scored.csv",
-        mime="text/csv",
-        use_container_width=True,
-    )
