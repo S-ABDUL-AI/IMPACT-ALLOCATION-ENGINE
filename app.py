@@ -35,11 +35,10 @@ st.set_page_config(
 st.markdown(
     r"""
 <style>
-    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:wght@400;600&display=swap");
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
     :root {
         --iae-font-ui: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        --iae-font-display: "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
     }
 
     html, body,
@@ -62,22 +61,43 @@ st.markdown(
         -moz-osx-font-smoothing: grayscale;
     }
 
+    /* Headings: same Inter family as body — hierarchy from weight + size, not a second typeface */
     .stApp h1,
     .stApp h2,
     .stApp h3,
     .stApp h4,
     .stApp h5,
     .stApp h6 {
-        font-family: var(--iae-font-display) !important;
-        font-weight: 600 !important;
-        letter-spacing: -0.02em;
+        font-family: var(--iae-font-ui) !important;
         color: #0f172a !important;
     }
 
-    .stApp h1 { font-size: 2rem !important; line-height: 1.2 !important; }
-    .stApp h2 { font-size: 1.35rem !important; }
-    .stApp h3 { font-size: 1.15rem !important; }
-    .stApp h4 { font-size: 1.05rem !important; }
+    .stApp h1 {
+        font-size: 2rem !important;
+        line-height: 1.15 !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.045em !important;
+    }
+    .stApp h2 {
+        font-size: 1.35rem !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.03em !important;
+    }
+    .stApp h3 {
+        font-size: 1.12rem !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.02em !important;
+    }
+    .stApp h4 {
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.015em !important;
+    }
+    .stApp h5, .stApp h6 {
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.01em !important;
+    }
 
     .stApp details > summary {
         font-family: var(--iae-font-ui) !important;
