@@ -14,7 +14,8 @@ import streamlit as st
 
 from data_loader import DEFAULT_REMOTE_CSV, load_interventions_csv
 from modeling import allocate_budget, calculate_scores, compare_budget_scale, scenario_effect_multiplier
-from policy import allocation_insights, build_mckinsey_style_report_html, funding_brief_markdown
+from policy import allocation_insights, funding_brief_markdown
+from report_html import build_mckinsey_style_report_html
 
 st.set_page_config(
     page_title="Impact Allocation Engine",

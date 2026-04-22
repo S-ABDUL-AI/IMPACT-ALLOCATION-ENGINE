@@ -57,9 +57,9 @@ def funding_brief_markdown(df: pd.DataFrame, total_budget: float, scenario: str)
         "",
         f"Allocate the largest marginal dollar share to **{top['intervention_name']}** while preserving a tail allocation to runner-ups for robustness.",
         f"Total modeled budget: **${total_budget:,.0f}**.",
-        "",
-        "### Note",
-        "",
-        "Figures are illustrative; they should be interpreted alongside qualitative judgment, implementation risk, and partner capacity.",
     ]
     return "\n".join(lines)
+
+
+# Re-export so `from policy import build_mckinsey_style_report_html` still works after deploy.
+from report_html import build_mckinsey_style_report_html as build_mckinsey_style_report_html
