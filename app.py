@@ -61,6 +61,18 @@ and should not be treated as their published cost-effectiveness estimates.
 # ---------------------------------------------------------------------------
 # Sidebar inputs
 # ---------------------------------------------------------------------------
+st.sidebar.markdown(
+    """
+**How to use**
+
+1. **Data** — Keep the default CSV URL or paste a raw link to your own `interventions`-style file.
+2. **Scope** — Choose **Select Region**, then open **Select Interventions** to add or remove programs.
+3. **Budget & scenario** — Set **Total budget** and **Scenario** (Base / Optimistic / Pessimistic).
+4. **Stress-test** — Move **Sensitivity** sliders (and optional **Moral weights**) to see how scores and allocations shift.
+5. **Decide** — Read the main dashboard (metrics, charts, allocation table, policy notes). Use **Download Report** for an HTML brief; expand **Raw data** for a CSV export.
+"""
+)
+st.sidebar.divider()
 st.sidebar.header("Inputs")
 remote = st.sidebar.text_input(
     "Raw CSV URL (optional)",
