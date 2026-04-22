@@ -72,16 +72,18 @@ _effective_url = remote.strip() or DEFAULT_REMOTE_CSV
 df0, data_src = cached_interventions(_effective_url)
 
 regions = sorted(df0["region"].unique().tolist())
-region_pick = st.sidebar.selectbox("Region", ["All regions"] + regions)
+region_pick = st.sidebar.selectbox("Select Region", ["All regions"] + regions)
 
 ids_default = df0["intervention_id"].tolist()
 _name_by_id = df0.set_index("intervention_id")["intervention_name"].to_dict()
-id_pick = st.sidebar.multiselect(
-    "Interventions",
-    options=ids_default,
-    default=ids_default,
-    format_func=lambda i: f"{i} — {_name_by_id.get(i, '')}",
-)
+with st.sidebar.expander("Select Interventions", expanded=False):
+    id_pick = st.multiselect(
+        "Select Interventions",
+        options=ids_default,
+        default=ids_default,
+        format_func=lambda i: f"{i} — {_name_by_id.get(i, '')}",
+        label_visibility="collapsed",
+    )
 
 total_budget = st.sidebar.slider("Total budget (USD)", 10_000, 2_000_000, 200_000, step=5_000)
 
