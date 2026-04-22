@@ -162,7 +162,7 @@ with st.sidebar:
 2. **Scope** — Choose **Select Region**, then open **Select Interventions** to add or remove programs.
 3. **Budget & scenario** — Set **Total budget** and **Scenario** (Base / Optimistic / Pessimistic).
 4. **Stress-test** — Move **Sensitivity** sliders (and optional **Moral weights**) to see how scores and allocations shift.
-5. **Decide** — Read **Executive summary** and the metrics/charts below, then allocation and policy notes. Use **Download Report** for an HTML brief (includes an appendix table you can copy into a spreadsheet).
+5. **Decide** — Read **Executive summary** (use **Download Report** in its top-right), then metrics/charts, allocation, and policy notes.
 """
             )
 
@@ -242,12 +242,33 @@ scored = calculate_scores(
 )
 alloc = allocate_budget(scored, total_budget)
 
+report_html = build_mckinsey_style_report_html(
+    alloc,
+    float(total_budget),
+    scenario,
+    region_pick,
+    cost_adj,
+    effect_adj,
+)
+
 # ---------------------------------------------------------------------------
 # Executive summary (portfolio / sponsor readers — quantitative detail stays below)
 # ---------------------------------------------------------------------------
 _ex = executive_summary_strip(alloc, float(total_budget), scenario, region_pick)
 with st.container(border=True):
-    st.markdown("#### Executive summary")
+    _hdr_l, _hdr_r = st.columns((6, 1))
+    with _hdr_l:
+        st.markdown("#### Executive summary")
+    with _hdr_r:
+        st.download_button(
+            "Download Report",
+            data=report_html.encode("utf-8"),
+            file_name="impact_allocation_funding_report.html",
+            mime="text/html",
+            use_container_width=False,
+            type="secondary",
+            help="Concise HTML brief: headline, findings, and appendix table. Open in a browser or import into Word.",
+        )
     es_l, es_r = st.columns((3, 1))
     with es_l:
         st.markdown(_ex["headline"])
@@ -384,21 +405,4 @@ st.markdown("**Note**")
 st.caption(
     "Figures are illustrative; they should be interpreted alongside qualitative judgment, "
     "implementation risk, and partner capacity."
-)
-
-report_html = build_mckinsey_style_report_html(
-    alloc,
-    float(total_budget),
-    scenario,
-    region_pick,
-    cost_adj,
-    effect_adj,
-)
-st.download_button(
-    "Download Report",
-    data=report_html.encode("utf-8"),
-    file_name="impact_allocation_funding_report.html",
-    mime="text/html",
-    use_container_width=True,
-    help="McKinsey-style HTML brief: headline insight, executive summary, findings, and appendix table. Open in a browser or import into Word.",
 )
